@@ -1,6 +1,6 @@
 import requests
 import json
-from config import keys
+from config import keys, ACCESS_KEY
 
 
 class ConvertionException(Exception):
@@ -29,8 +29,11 @@ class CryptoConverter:
         except ValueError:
             raise ConvertionException(f'Не удалось обработать количество {amount}')
 
-        r = requests.get(f'https://min-api.cryptocompare.com/data/price?fsym={quote_ticker}&tsyms={base_ticker}')
-        r = requests.get(f'https://api.exchangeratesapi.io/v1/convert? access_key = 993f9dea8084b0746ddf1c8dda9ef0fa& from = GBP& to = JPY& amount = {amount}')
+#  r = requests.get(f'https://min-api.cryptocompare.com/data/price?fsym={quote_ticker}&tsyms={base_ticker}')
+        r = requests.get(f'https://api.exchangeratesapi.io/v1/convert'
+                         f'?access_key = {ACCESS_KEY}'
+                         f'& from = {quote_ticker}& to = {base_ticker}'
+                         f'& amount = {amount}')
         total_base = json.loads(r.content)[keys[base]]
 
         return total_base
