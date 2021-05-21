@@ -29,11 +29,13 @@ class CryptoConverter:
         except ValueError:
             raise ConvertionException(f'Не удалось обработать количество {amount}')
 
-#  r = requests.get(f'https://min-api.cryptocompare.com/data/price?fsym={quote_ticker}&tsyms={base_ticker}')
-        r = requests.get(f'https://api.exchangeratesapi.io/v1/convert'
-                         f'?access_key = {ACCESS_KEY}'
-                         f'& from = {quote_ticker}& to = {base_ticker}'
-                         f'& amount = {amount}')
-        total_base = json.loads(r.content)[keys[base]]
+        r = requests.get(f'http://api.exchangeratesapi.io/v1/latest'
+                         f'?access_key={ACCESS_KEY}'
+                         f'&base={quote_ticker}&symbols={base_ticker}')
+        json_response = json.loads(r.content)
+        rates = json_response.get('rates')
+        base_rate = rates[keys[base]]
+        total_base = base_rate * amount
 
-        return total_base
+        return round(total_base, 4)
+
